@@ -14,7 +14,11 @@ func main() {
 		log.Fatalf("error listen : %s", err)
 	}
 
-	server := grpc.NewServer()
-	proto.RegisterInvoiceServer(server, &structs.InvoiceServer{})
+	serverRegister := grpc.NewServer()
+	proto.RegisterInvoiceServer(serverRegister, &structs.InvoiceServer{})
+
+	if serverRegister.Serve(listen); err != nil {
+		log.Fatalf("error Serve : %s", err)
+	}
 
 }
