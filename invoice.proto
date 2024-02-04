@@ -1,0 +1,15 @@
+syntax = 'photo3';
+
+
+service Invoice {
+  rpc Create(CreateRequest) returns (CreateResponse);
+
+}
+
+message CreateRequest {
+
+}
+
+message CreateResponse {
+
+}
