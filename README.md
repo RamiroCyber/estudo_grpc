@@ -1,4 +1,4 @@
-# Serviço de Faturas com Go e gRPC
+# Estudo gRPC
 
 ## Visão Geral
 
@@ -33,4 +33,4 @@ O serviço de Faturas é definido no arquivo `invoice.proto`. Ele consiste em um
 
 ## Executando o Serviço
 
-Para executar o serviço, certifique-se de ter o Go e o compilador de Protocol Buffers instalados. Gere o código gRPC e, em seguida, inicie o servidor executando `server/main.go`. Se existir uma implementação de cliente, ela pode se comunicar com o servidor através dos métodos gRPC definidos.
+Para executar o serviço, certifique-se de ter o Go e o compilador de Protocol Buffers instalados. Gere o código gRPC e, em seguida, inicie o servidor executando `cmd/server/main.go`. Se existir uma implementação de cliente, ela pode se comunicar com o servidor através dos métodos gRPC definidos.
