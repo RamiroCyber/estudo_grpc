@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"gopkg.in/mgo.v2"
 )
 
@@ -24,7 +23,6 @@ func (c *conn) Close() {
 }
 
 func NewConnection(cfg Config) (Connection, error) {
-	fmt.Print("database url: " + cfg.Dsn())
 	session, err := mgo.Dial(cfg.Dsn())
 	if err != nil {
 		panic(err)

@@ -1,24 +1,33 @@
 package main
 
 import (
-	"github.com/ramiroribeiro/estudo_grpc/proto"
-	"github.com/ramiroribeiro/estudo_grpc/structs"
-	"google.golang.org/grpc"
+	"flag"
+	"github.com/joho/godotenv"
+	"github.com/ramiroribeiro/estudo_grpc/database"
 	"log"
-	"net"
 )
 
+var local bool
+
+func init() {
+	flag.BoolVar(&local, "local", true, "run service local")
+	flag.Parse()
+}
+
 func main() {
-	listen, err := net.Listen("tcp", ":8089")
+	if local {
+		if err := godotenv.Load(".env"); err != nil {
+			log.Panic(err)
+		}
+	}
+
+	cfg := database.NewConfig()
+	cfg.GenerateDSN()
+
+	conn, err := database.NewConnection(cfg)
 	if err != nil {
-		log.Fatalf("error listen : %s", err)
+		log.Panic(err)
 	}
-
-	serverRegister := grpc.NewServer()
-	proto.RegisterInvoiceServer(serverRegister, &structs.InvoiceServer{})
-
-	if serverRegister.Serve(listen); err != nil {
-		log.Fatalf("error Serve : %s", err)
-	}
+	defer conn.Close()
 
 }
