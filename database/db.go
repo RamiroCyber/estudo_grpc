@@ -1,31 +1,32 @@
 package database
 
 import (
-	"gopkg.in/mgo.v2"
+	"context"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
+	"os"
+	"time"
 )
 
-type Connection interface {
-	Close()
-	DB() *mgo.Database
-}
+var Client *mongo.Client
 
-type conn struct {
-	session  *mgo.Session
-	database *mgo.Database
-}
+func ConnectDB() {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-func (c *conn) DB() *mgo.Database {
-	return c.database
-}
+	clientOptions := options.Client().ApplyURI(os.Getenv("database"))
 
-func (c *conn) Close() {
-	c.session.Close()
-}
-
-func NewConnection(cfg Config) (Connection, error) {
-	session, err := mgo.Dial(cfg.Dsn())
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	return &conn{session: session, database: session.DB(cfg.DbName())}, nil
+
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Client = client
+	log.Println("Connected to MongoDB!")
 }
