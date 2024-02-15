@@ -1,32 +1,33 @@
 package main
 
 import (
-	"flag"
-	"github.com/joho/godotenv"
+	"context"
+	"github.com/ramiroribeiro/estudo_grpc/config"
 	"github.com/ramiroribeiro/estudo_grpc/database"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
-var local bool
-
 func init() {
-	flag.BoolVar(&local, "local", true, "run service local")
-	flag.Parse()
+	config.LoadEnvironment()
+	database.ConnectDB()
+	database.SetupCollections()
 }
 
 func main() {
-	if local {
-		if err := godotenv.Load(".env"); err != nil {
-			log.Panic(err)
-		}
-	}
 
-	cfg := database.NewConfig()
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
-	conn, err := database.NewConnection(cfg)
-	if err != nil {
-		log.Panic(err)
-	}
-	defer conn.Close()
+	<-c
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	database.Client.Disconnect(ctx)
+
+	log.Println("SERVER DOWN")
 
 }
