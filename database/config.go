@@ -30,18 +30,20 @@ func (c *config) Dsn() string {
 }
 
 func NewConfig() *config {
+	var cfg config
 	port, err := strconv.Atoi(os.Getenv("DATABASE_PORT"))
 	if err != nil {
 		log.Fatalf("Erro na conversão de DATABASE_PORT: %v", err.Error())
 	}
-	return &config{
-		dbName: os.Getenv("DATABASE_NAME"),
-		dbHost: os.Getenv("DATABASE_HOST"),
-		dbUser: os.Getenv("DATABASE_USER"),
-		dbPass: os.Getenv("DATABASE_PASS"),
-		dbPort: port,
-	}
+	cfg.dbName = os.Getenv("DATABASE_NAME")
+	cfg.dbHost = os.Getenv("DATABASE_HOST")
+	cfg.dbUser = os.Getenv("DATABASE_USER")
+	cfg.dbPass = os.Getenv("DATABASE_PASS")
+	cfg.dbPort = port
+	cfg.dsn = fmt.Sprintf("mongodb://%s:%s@%s:%d/%s", cfg.dbUser, cfg.dbPass, cfg.dbHost, cfg.dbPort, cfg.dbName)
+
+	return &cfg
 }
-func (c *config) GenerateDSN() {
-	c.dsn = fmt.Sprintf("mongodb://%s:%s@%s/%d/%s", c.dbUser, c.dbPass, c.dbHost, c.dbPort, c.dbName)
+func (c *config) Dns() string {
+	return c.dsn
 }

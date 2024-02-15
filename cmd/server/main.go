@@ -22,7 +22,6 @@ func main() {
 	}
 
 	cfg := database.NewConfig()
-	cfg.GenerateDSN()
 
 	conn, err := database.NewConnection(cfg)
 	if err != nil {
