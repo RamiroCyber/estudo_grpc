@@ -2,28 +2,32 @@ package database
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
-	"time"
 )
 
 var Client *mongo.Client
 
 func ConnectDB() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 
-	clientOptions := options.Client().ApplyURI(os.Getenv("database"))
+	clientOptions := options.Client().ApplyURI(os.Getenv("database")).SetServerAPIOptions(serverAPI)
 
-	client, err := mongo.Connect(ctx, clientOptions)
+	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = client.Ping(ctx, nil)
-	if err != nil {
+	defer func() {
+		if err = client.Disconnect(context.TODO()); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
 		log.Fatal(err)
 	}
 
