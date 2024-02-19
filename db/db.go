@@ -1,4 +1,4 @@
-package database
+package db
 
 import (
 	"context"
@@ -14,7 +14,7 @@ var Client *mongo.Client
 func ConnectDB() {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 
-	clientOptions := options.Client().ApplyURI(os.Getenv("database")).SetServerAPIOptions(serverAPI)
+	clientOptions := options.Client().ApplyURI(os.Getenv("db")).SetServerAPIOptions(serverAPI)
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {

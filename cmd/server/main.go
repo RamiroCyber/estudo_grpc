@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/ramiroribeiro/estudo_grpc/config"
-	"github.com/ramiroribeiro/estudo_grpc/database"
+	"github.com/ramiroribeiro/estudo_grpc/db"
 	"log"
 	"os"
 	"os/signal"
@@ -13,8 +13,7 @@ import (
 
 func init() {
 	config.LoadEnvironment()
-	database.ConnectDB()
-	database.SetupCollections()
+	db.ConnectDB()
 }
 
 func main() {
@@ -26,7 +25,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	database.Client.Disconnect(ctx)
+	db.Client.Disconnect(ctx)
 
 	log.Println("SERVER DOWN")
 
