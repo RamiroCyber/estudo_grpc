@@ -16,3 +16,7 @@ type userRepository struct {
 func NewUsersRepository(coon mongo.Client) UserRepository {
 	return &userRepository{coon.Database(os.Getenv("MONGO_DB")).Collection(UserCollection)}
 }
+
+func (r *userRepository) Create() {
+
+}
