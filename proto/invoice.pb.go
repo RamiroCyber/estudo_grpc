@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v4.25.2
-// source: invoice.proto
+// source: auth.proto
 
 package proto
 
